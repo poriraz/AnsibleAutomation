@@ -1,8 +1,12 @@
 [dev]
-serverBB ansible_host=127.0.0.1 ansible_port=27 
-#serverCC ansible_host=127.0.0.1 ansible_port=28 
+serverBB ansible_host=127.0.0.1 ansible_port=24 
+#serverCC ansible_host=127.0.0.1 ansible_port=24 
 #serverDD ansible_host=127.0.0.1 ansible_port=29
-[haproxy]
+
+[test]
+serverC ansible_host=127.0.0.1 ansible_port=23 
+
+[ha]
 haproxy ansible_host=127.0.0.1 ansible_port=30
 
 [all:vars] 
