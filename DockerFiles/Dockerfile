@@ -26,6 +26,7 @@ RUN chmod 600 /root/.ssh/authorized_keys && \
 # Expose ports for incoming SSH and Flask connections
 EXPOSE 22 
 EXPOSE 4006
+EXPOSE 81
 
 # Start SSH server and Flask app
 CMD ["/usr/sbin/sshd", "-D"]
