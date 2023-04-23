@@ -1,0 +1,48 @@
+---
+- name: Deploy Flask application
+  hosts: dev
+  become: yes
+
+  tasks:
+
+    - name: Install Python and Flask
+      ansible.builtin.pip:
+        name:
+          - flask
+
+    - name: Copy Flask application script
+      ansible.builtin.copy:
+        src: application2.py
+        dest: /home/application2.py
+        mode: '0755'
+
+    - name: Start Flask application
+      ansible.builtin.shell:
+        cmd: "python /home/application2.py &"
+
+    - name: Start Flask application2
+      ansible.builtin.command: python3 /home/application2.py &
+      
+
+- name: Install HAProxy
+  hosts: haproxy
+  become: true
+  tasks:
+    - name: Install HAProxy
+      apt:
+        name: haproxy
+        state: present
+
+    - name: Copy HAProxy configuration file
+      copy:
+        src: haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg
+        mode: '0644'
+      notify:
+        - restart haproxy
+
+  handlers:
+    - name: restart haproxy
+      service:
+        name: haproxy
+        state: restarted
