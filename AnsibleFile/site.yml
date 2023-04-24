@@ -1,10 +1,16 @@
 ---
 - name: Deploy Flask application
-  hosts: test
+  hosts: dev
   become: yes
 
   tasks:
-
+  
+    - name: Install Requirmnets
+      pip:
+        name:
+          - net-tools
+        
+     
     - name: Install Python and Flask
       ansible.builtin.pip:
         name:
