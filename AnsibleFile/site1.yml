@@ -1,49 +1,45 @@
 ---
-- name: Install pip
-  hosts: all
-  become: true
-  
-  tasks:
-    - name: Install python-pip
-      apt:
-        name: python3-pip
-        state: present
-
-- name: Deploy Flask application
+- name: Deploy Flask application and install HAProxy
   hosts: dev
-  become: yes
-
+  become: true
   tasks:
-  
+    - name: Create SSH directory for root
+      become_user: root
+      file:
+        path: /root/.ssh
+        state: directory
+        mode: '0700'
+
+    - name: Copy SSH key for root
+      become_user: root
+      copy:
+        src: /home/student/.ssh/id_rsa.pub
+        dest: /root/.ssh/authorized_keys
+        mode: '0600'
+
     - name: Install Requirmnets
       pip:
         name:
           - net-tools
-          
-            
+
     - name: Install Python and Flask
-      ansible.builtin.pip:
+      pip:
         name:
           - flask
 
     - name: Copy Flask application script
-      ansible.builtin.copy:
+      copy:
         src: application2.py
         dest: /home/application2.py
         mode: '0755'
 
     - name: Start Flask application
-      ansible.builtin.shell:
+      shell:
         cmd: "python /home/application2.py &"
 
     - name: Start Flask application2
-      ansible.builtin.command: python3 /home/application2.py &
-      
+      command: python3 /home/application2.py &
 
-- name: Install HAProxy
-  hosts: haproxy
-  become: true
-  tasks:
     - name: Install HAProxy
       apt:
         name: haproxy
@@ -62,3 +58,4 @@
       service:
         name: haproxy
         state: restarted
+

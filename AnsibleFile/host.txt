@@ -1,14 +1,8 @@
 [dev]
-serverBB ansible_host=127.0.0.1 ansible_port=50 
-serverCC ansible_host=127.0.0.1 ansible_port=49 
-serverDD ansible_host=127.0.0.1 ansible_port=48
- 
+devA ansible_host=10.0.1.4 ansible_port=22 ansible_ssh_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa ansible_ssh_public_key_file=/root/.ssh/id_rsa.pub
+devB ansible_host=10.0.1.6 ansible_port=22 ansible_ssh_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa ansible_ssh_public_key_file=/root/.ssh/id_rsa.pub
 
-[ha]
-haproxy ansible_host=127.0.0.1 ansible_port=47
-
-[all:vars] 
-ansible_user=root 
-ansible_ssh_private_key_file=/.ssh/id_rsa.pub
+[haproxy]
+HAproxy ansible_host=10.0.1.5 ansible_port=22 ansible_ssh_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa ansible_ssh_public_key_file=/root/.ssh/id_rsa.pub
 
 
