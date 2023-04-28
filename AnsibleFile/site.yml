@@ -32,33 +32,40 @@
         dest: /home/application2.py
         mode: '0755'
 
-    - name: Start Flask application
+    - name: Copy my-app-service
+      ansible.builtin.copy:
+        src: my_flask_app.service
+        dest: /etc/systemd/system/my_flask_app.service
+        mode: '0777'
+    - name: daemon Flask application service
       ansible.builtin.shell:
-        cmd: "python /home/application2.py &"
-
-    - name: Start Flask application2
-      ansible.builtin.command: python3 /home/application2.py &
+        cmd: "sudo systemctl daemon-reload "
+    - name: Start Flask application service
+      ansible.builtin.shell:
+        cmd: "sudo systemctl restart my_flask_app "
       
 
-- name: Install HAProxy
-  hosts: haproxy
-  become: true
+- hosts: haproxy
+  become: yes
+  vars:
+    Mymessage: "Haproxy: Hi users, welcome to loadbalancer"
+    algorithm:  roundrobin
+    loadbalancer_name: haproxy
+    loadbal_src_path: haproxy.cfg.j2
+    loadbal_dest_path: /etc/haproxy/haproxy.cfg
+    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default.ipv4.address']['address'] }}"
   tasks:
-    - name: Install HAProxy
-      apt:
-        name: haproxy
-        state: present
-
-    - name: Copy HAProxy configuration file
-      copy:
-        src: haproxy.cfg
-        dest: /etc/haproxy/haproxy.cfg
-        mode: '0644'
-      notify:
-        - restart haproxy
-
-  handlers:
-    - name: restart haproxy
-      service:
-        name: haproxy
+    - name: Task7(Install Haproxy)
+      become: yes 
+      apt: 
+        name: "{{loadbalancer_name}}" 
+        state:  present
+    
+    - name: Task8(Copy HAProxy Config File) 
+      template:
+        src:  "{{loadbal_src_path}}"
+        dest: "{{loadbal_dest_path}}"
+    - name: Task9(Restart HAproxy)
+      service:  
+        name: "{{loadbalancer_name}}"
         state: restarted
