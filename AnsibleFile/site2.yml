@@ -1,0 +1,71 @@
+---
+- name: Install pip
+  hosts: all
+  become: true
+  
+  tasks:
+    - name: Install python-pip
+      apt:
+        name: python3-pip
+        state: present
+        
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+
+- name: Deploy Flask application
+  hosts: dev
+  become: yes
+
+  tasks:
+  
+    - name: Install Requirmnets
+      pip:
+        name:
+          - net-tools
+          
+            
+    - name: Install Python and Flask
+      ansible.builtin.pip:
+        name:
+          - flask
+
+    - name: Copy Flask application script
+      ansible.builtin.copy:
+        src: application2.py
+        dest: /home/application2.py
+        mode: '0755'
+
+    - name: Start Flask application
+      ansible.builtin.shell:
+        cmd: "python /home/application2.py &"
+
+ #   - name: Start Flask application2
+ #     ansible.builtin.command: python3 /home/application2.py &
+      
+
+- hosts: haproxy
+  become: yes
+  vars:
+    Mymessage: "Haproxy: Hi users, welcome to loadbalancer"
+    algorithm:  roundrobin
+    loadbalancer_name: haproxy
+    loadbal_src_path: haproxy.cfg.j2
+    loadbal_dest_path: /etc/haproxy/haproxy.cfg
+    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default.ipv4.address']['address'] }}"
+  tasks:
+    - name: Task7(Install Haproxy)
+      become: yes 
+      apt: 
+        name: "{{loadbalancer_name}}" 
+        state:  present
+    
+    - name: Task8(Copy HAProxy Config File) 
+      template:
+        src:  "{{loadbal_src_path}}"
+        dest: "{{loadbal_dest_path}}"
+    - name: Task9(Restart HAproxy)
+      service:  
+        name: "{{loadbalancer_name}}"
+        state: restarted
