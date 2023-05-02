@@ -84,7 +84,7 @@
         
 
     
-- hosts: dev
+- hosts: haproxy
   tasks:
     - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
     
@@ -101,8 +101,34 @@
       debug:
         var: curl_output.stdout
 
+    - name: Send HTTP request
+      command: "curl -s http://{{ansible_default_ipv4.address}}"
+      register: curl_output
+
+    - name: Display HTTP response
+      debug:
+        var: curl_output.stdout
+        
+    - name: Send HTTP request
+      command: "curl -s http://{{ansible_default_ipv4.address}}"
+      register: curl_output
+
+    - name: Display HTTP response
+      debug:
+        var: curl_output.stdout
     
-    
+- name: Install SSH on bastion host 
+  hosts: bas
+
+  tasks:
+    - name: Install SSH server package
+      apt:
+        name: openssh-server
+        state: present
+
+    - name: Change hostname to bastionNSO
+      hostname:
+        name: bastionNSO
     
 
     
