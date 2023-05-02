@@ -1,0 +1,8 @@
+
+{%  for server in groups['dev'] %}
+    HOST {{ hostvars[server]['inventory_hostname'] }} 
+        HostName {{ hostvars[server]['ansible_default_ipv4']['address']}}
+        User root
+{% endfor %}
+
+
