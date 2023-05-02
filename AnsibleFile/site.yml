@@ -1,4 +1,15 @@
 ---
+- name: Update Ubuntu system 
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update Ubuntu system
+      apt:
+        update_cache: yes
+
+
+
 - name: Install pip
   hosts: all
   become: true
@@ -8,6 +19,7 @@
       apt:
         name: python3-pip
         state: present
+        
 
 - name: Deploy Flask application
   hosts: dev
@@ -53,7 +65,7 @@
     loadbalancer_name: haproxy
     loadbal_src_path: haproxy.cfg.j2
     loadbal_dest_path: /etc/haproxy/haproxy.cfg
-    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default.ipv4.address']['address'] }}"
+    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
   tasks:
     - name: Task7(Install Haproxy)
       become: yes 
@@ -69,3 +81,29 @@
       service:  
         name: "{{loadbalancer_name}}"
         state: restarted
+        
+
+    
+- hosts: dev
+  tasks:
+    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+    
+
+    - name: Ping HAProxy IP
+      ping:
+        data: "{{ ansible_default_ipv4.address }}"
+        
+    - name: Send HTTP request
+      command: "curl -s http://{{ansible_default_ipv4.address}}"
+      register: curl_output
+
+    - name: Display HTTP response
+      debug:
+        var: curl_output.stdout
+
+    
+    
+    
+
+    
+
