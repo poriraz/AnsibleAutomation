@@ -1,14 +1,4 @@
 ---
-- name: Update Ubuntu system 
-  hosts: all
-  become: true
-
-  tasks:
-    - name: Update Ubuntu system
-      apt:
-        update_cache: yes
-
-
 
 - name: Install pip
   hosts: all
@@ -51,26 +41,12 @@
         mode: '0777'
     - name: daemon Flask application service
       ansible.builtin.shell:
-        cmd: "sudo systemctl daemon-reload "
+        cmd: "systemctl daemon-reload "
     - name: Start Flask application service
       ansible.builtin.shell:
-        cmd: "sudo systemctl restart my_flask_app "
+        cmd: "systemctl restart my_flask_app "
         
-- hosts: bastion
-  become: yes
-  vars:
-    Mymessage: "SSH Configuration"
-    algorithm:  roundrobin
-    loadbalancer_name: bastion
-    loadbal_src_path: ssh.cfg.j2
-    loadbal_dest_path: /root/.ssh/config
-    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-  tasks:
-    
-    - name: Task8(Copy SSH Config File) 
-      template:
-        src:  "{{loadbal_src_path}}"
-        dest: "{{loadbal_dest_path}}"
+
       
 
 - hosts: haproxy
@@ -133,10 +109,24 @@
       debug:
         var: curl_output.stdout
     
-- name: Install SSH on bastion host 
-  hosts: bas
 
+- hosts: bastion
+  become: yes
+  vars:
+    Mymessage: "SSH Configuration"
+    algorithm:  roundrobin
+    loadbalancer_name: bastion
+    loadbal_src_path: ssh.cfg.j2
+    loadbal_dest_path: /root/.ssh/config
+    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
   tasks:
+    
+    - name: Task8(Copy SSH Config File) 
+      template:
+        src:  "{{loadbal_src_path}}"
+        dest: "{{loadbal_dest_path}}"
+
+
     - name: Install SSH server package
       apt:
         name: openssh-server
