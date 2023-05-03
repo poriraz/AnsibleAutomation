@@ -112,31 +112,7 @@
         var: curl_output.stdout
     
 
-- hosts: bastion
-  become: yes
-  vars:
-    Mymessage: "SSH Configuration"
-    algorithm:  roundrobin
-    loadbalancer_name: bastion
-    loadbal_src_path: ssh.cfg.j2
-    loadbal_dest_path: /root/.ssh/config
-    haproxy_host_ipv4_address: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-  tasks:
-    
-    - name: Task8(Copy SSH Config File) 
-      template:
-        src:  "{{loadbal_src_path}}"
-        dest: "{{loadbal_dest_path}}"
 
-
-    - name: Install SSH server package
-      apt:
-        name: openssh-server
-        state: present
-
-    - name: Change hostname to bastionNSO
-      hostname:
-        name: bastionNSO
     
 
     
