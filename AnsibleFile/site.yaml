@@ -5,9 +5,18 @@
   become: true
   
   tasks:
+#    - name: Update Ubuntu system
+#      apt:
+#        update_cache: yes
+        
     - name: Install python-pip
       apt:
         name: python3-pip
+        state: present
+        
+    - name: Install curl package
+      apt:
+        name: curl
         state: present
         
 
@@ -74,13 +83,6 @@
         name: "{{loadbalancer_name}}"
         state: restarted
         
-
-    
-- hosts: haproxy
-  tasks:
-    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
-    
-
     - name: Ping HAProxy IP
       ping:
         data: "{{ ansible_default_ipv4.address }}"
