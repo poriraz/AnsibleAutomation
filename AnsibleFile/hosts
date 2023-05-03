@@ -1,9 +1,9 @@
 
 
 [dev]
-deva ansible_host=10.0.4.20
-devb ansible_host=10.0.4.21
-devc ansible_host=10.0.4.22
+devA ansible_host=10.0.4.20
+devB ansible_host=10.0.4.21
+devC ansible_host=10.0.4.22
 
 
 [bastion]
@@ -15,8 +15,7 @@ HAproxy ansible_host=10.0.4.5
 [all:vars]
 ansible_port=22
 ansible_ssh_user=root 
-ansible_ssh_private_key_file=/root/.ssh/id_rsa
-ansible_ssh_public_key_file=/root/.ssh/id_rsa.pub
+
 
 
 
