@@ -1,16 +1,16 @@
 
 
 [dev]
-devA ansible_host=10.0.4.20
-devB ansible_host=10.0.4.21
-devC ansible_host=10.0.4.22
+devA 
+devB
+devC 
 
 [haproxy]
-HAproxy ansible_host=10.0.4.5
+HAproxy
 
 [all:vars]
 ansible_port=22
-ansible_ssh_user=root 
+ansible_ssh_user=ubuntu 
 
 
 
